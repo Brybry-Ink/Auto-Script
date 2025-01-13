@@ -1,2 +1,7 @@
 # Auto-Script
-An automated script that will install the programs that you'd like in a neat and orderly way.
+This script automates and installation of desired programs in an orderly and predefined sequence. It ensures that all needed software is installed whilst saving time and reducing human error.
+
+# Features
+
+
+# Prerequisites
