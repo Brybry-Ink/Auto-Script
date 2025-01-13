@@ -5,3 +5,4 @@ This script automates and installation of desired programs in an orderly and pre
 Automatic installation of selected programs.
 
 # Prerequisites
+Windows 10/11
