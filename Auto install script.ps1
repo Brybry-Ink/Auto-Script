@@ -2,6 +2,11 @@
 # Example: Autoinstallscript.ps1
 # Main Script: Application Selection and Generation of an Execution Script
 
+# --- Customizes Initial Background and Foreground ---
+mode con: cols=67 lines=30
+$Host.ui.rawui.backgroundcolor = "Black"
+$Host.ui.rawui.foregroundcolor = "white"
+
 # --- OS Selection ---
 do {
     Clear-Host
