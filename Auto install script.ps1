@@ -1,5 +1,5 @@
-This file should be in .ps1 for it to work
-Example: Autoinstallscript.ps1
+# This file should be in .ps1 for it to work
+# Example: Autoinstallscript.ps1
 # Main Script: Application Selection and Generation of an Execution Script
 
 # --- OS Selection ---
@@ -10,23 +10,25 @@ do {
     Write-Host "2. Linux"
     $userOSInput = Read-Host "Enter 1 or 2"
 
-    switch ($userOSInput) {
+    switch ($userOSInput) 
+    {
         "1" {
             $osSelection = "Windows"
             $validOS = $true
-        }
+            }
         "2" {
             Write-Host "Linux support is not finished yet. Please select a different option." -ForegroundColor Red
             Start-Sleep 2
             $validOS = $false
-        }
-        Default {
+            }
+        Default 
+        {
             Write-Host "Invalid selection. Please try again." -ForegroundColor Red
             Start-Sleep 2
             $validOS = $false
-        }
+        }  
     }
-} until ($validOS)
+    } until ($validOS)
 
 # --- Application Selection ---
 # Define the available applications.
@@ -97,55 +99,44 @@ if ($selectedOptions.Count -eq 0) {
     exit
 }
 
-# --- Generate Execution Script ---
-#Hard coded File path for application exe.
-$exeFolder = "C:\Users\antho\Temp\Application .EXE"
+# --- Generate Winget Install Script ---
+$tempPath = [System.IO.Path]::Combine([System.Environment]::GetFolderPath("Desktop"), "open_selected_apps.ps1")
 
-# The generated script will be placed in the Temp folder. This should be changed to the desktop later on or download
-$tempPath = "C:\Users\antho\Temp"
-if (!(Test-Path $tempPath)) {
-    New-Item -ItemType Directory -Path $tempPath | Out-Null
+#  applications names mapped to their winget IDs
+$appFileMap = @{
+    "Steam"            = "Valve.Steam"
+    "Adobe Reader"     = "Adobe.Acrobat.Reader.64-bit"
+    "Microsoft Teams"  = "Microsoft.Teams"
+    "FireFox"          = "Mozilla.Firefox"
+    "Discord"          = "Discord.Discord"
+    "Google Chrome"    = "Google.Chrome"
+    "Notepad ++"       = "Notepad++.Notepad++"
 }
 
-$generatedScriptPath = "$tempPath\open_selected_apps.ps1"
-
-# Begin building the generated script content.
+# builds generated script
 $scriptContent = @"
-# Generated Execution Script
-# This script opens the installer (EXE) files from a hardcoded folder.
-`$exeFolder = "$exeFolder"
+# Generated script through Auto-Script.
+# This script installs selected applications using winget.
+#
 
 "@
 
-#  applications with their correct filenames.
-$appFileMap = @{
-    "Steam"            = "SteamSetup.exe"
-    "Adobe Reader"     = "Reader_en_install.exe"
-    "Microsoft Teams"  = "MSTeamsSetup.exe"
-    "FireFox"          = "Firefox Installer.exe"
-    "Discord"          = "DiscordSetup.exe"
-    "Google Chrome"    = "ChromeSetup.exe"
-    "Notepad ++"       = "npp.8.7.6.Installer.x64.exe"
-}
-
-# For each selected application, add a command that opens the corresponding EXE.
-foreach ($app in $selectedOptions) {
-    if ($appFileMap.ContainsKey($app)) {
-        $exeFile = $appFileMap[$app]
-        $scriptContent += "if (Test-Path `"$exeFolder\$exeFile`") {`n"
-        $scriptContent += "    Start-Process `"$exeFolder\$exeFile`"`n"
-        $scriptContent += "} else {`n"
-        $scriptContent += "    Write-Host `"Error: $app installer not found at $exeFolder\$exeFile`" -ForegroundColor Red`n"
-        $scriptContent += "}`n`n"
+# loops through all selected applications and adds winget install commands.
+foreach ($app in $selectedOptions) 
+{
+    if ($appFileMap.ContainsKey($app)) 
+    {
+        $wingetID = $appFileMap[$app]
+        $scriptContent += "Write-Host `"Installing $app...`" -ForegroundColor Cyan`n"
+        $scriptContent += "winget install --id $wingetID --silent --accept-source-agreements --accept-package-agreements`n"
     }
 }
 
-# Write the generated script to file.
-$scriptContent | Out-File -FilePath $generatedScriptPath -Encoding utf8
+# Writes the generated script to the Desktop
+$scriptContent | Out-File -FilePath $tempPath -Encoding utf8
 
-Write-Host "`nExecution script created at: $generatedScriptPath" -ForegroundColor Green
-Write-Host "It is hardcoded to use the folder: $exeFolder"
-Write-Host "When run, it will attempt to open the EXE files from that location."
-  
-# Keep the window open until the user is ready to exit.
+Write-Host "`nExecution script created at: $tempPath" -ForegroundColor Green
+Write-Host "This script will install the selected applications using Winget."
 Read-Host "Press Enter to exit"
+
+
