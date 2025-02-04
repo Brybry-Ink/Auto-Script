@@ -1,3 +1,5 @@
+This file should be in .ps1 for it to work
+Example: Autoinstallscript.ps1
 # Main Script: Application Selection and Generation of an Execution Script
 
 # --- OS Selection ---
