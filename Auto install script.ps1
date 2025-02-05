@@ -45,7 +45,8 @@ $options = @(
     "FireFox",
     "Discord",
     "Google Chrome",
-    "Notepad ++"
+    "Notepad ++",
+    "Java 8"
             )
 
 $selectedOptions = @()
@@ -133,6 +134,7 @@ $appFileMap = @{
     "Discord"          = "Discord.Discord"
     "Google Chrome"    = "Google.Chrome"
     "Notepad ++"       = "Notepad++.Notepad++"
+    "Java 8"           = "Oracle.JavaRuntimeEnvironment"
                 }
 
 # builds generated script
