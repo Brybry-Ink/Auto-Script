@@ -123,7 +123,7 @@ if ($selectedOptions.Count -eq 0)
 }
 
 # --- Generate Winget Install Script ---
-$tempPath = [System.IO.Path]::Combine([System.Environment]::GetFolderPath("Desktop"), "open_selected_apps.ps1")
+$tempPath = [System.IO.Path]::Combine([System.Environment]::GetFolderPath("Desktop"), "Auto-Script.ps1")
 
 #  applications names mapped to their winget IDs
 $appFileMap = @{
@@ -142,7 +142,7 @@ $scriptContent = @"
 # Generated script through Auto-Script.
 # This script installs selected applications using winget.
 #
-
+ 
 "@
 
 # loops through all selected applications and adds winget install commands.
