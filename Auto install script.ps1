@@ -141,8 +141,8 @@ $appFileMap = @{
 $scriptContent = @"
 # Generated script through Auto-Script.
 # This script installs selected applications using winget.
-#
- 
+#`n
+
 "@
 
 # loops through all selected applications and adds winget install commands.
@@ -153,6 +153,7 @@ foreach ($app in $selectedOptions)
         $wingetID = $appFileMap[$app]
         $scriptContent += "Write-Host `"Installing $app...`" -ForegroundColor Cyan`n"
         $scriptContent += "winget install --id $wingetID --silent --accept-source-agreements --accept-package-agreements`n"
+        $scriptContent += "`n"
     }
 }
 
