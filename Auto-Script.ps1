@@ -23,9 +23,8 @@ do
             $validOS = $true
             }
         "2" {
-            Write-Host "Linux support is not finished yet. Please select a different option." -ForegroundColor Red
-            Start-Sleep 2
-            $validOS = $false
+            $osSelection = "Linux"
+            $validOS = $true
             }
         Default 
         {
@@ -112,7 +111,7 @@ while ($true)
         Write-Host "Invalid input. Please enter a valid number or 'X' to finish." -ForegroundColor Red
     }
     
-    Start-Sleep 1.5
+    Start-Sleep 1
 }
 
 if ($selectedOptions.Count -eq 0) 
@@ -122,23 +121,26 @@ if ($selectedOptions.Count -eq 0)
     exit
 }
 
-# --- Generate Winget Install Script ---
-$tempPath = [System.IO.Path]::Combine([System.Environment]::GetFolderPath("Desktop"), "Auto-Script.ps1")
+# --- Generate Windows Install Script ---
+if ($osSelection -eq "Windows")
+{
+    $tempPath = [System.IO.Path]::Combine([System.Environment]::GetFolderPath("Desktop"), "Installer-Script.ps1")
+    
+    #  applications names mapped to their winget IDs
+    $appFileMap = @{
+        "Steam"            = "Valve.Steam"
+        "Adobe Reader"     = "Adobe.Acrobat.Reader.64-bit"
+        "Microsoft Teams"  = "Microsoft.Teams"
+        "FireFox"          = "Mozilla.Firefox"
+        "Discord"          = "Discord.Discord"
+        "Google Chrome"    = "Google.Chrome"
+        "Notepad ++"       = "Notepad++.Notepad++"
+        "Java 8"           = "Oracle.JavaRuntimeEnvironment"
+                    }
+}
 
-#  applications names mapped to their winget IDs
-$appFileMap = @{
-    "Steam"            = "Valve.Steam"
-    "Adobe Reader"     = "Adobe.Acrobat.Reader.64-bit"
-    "Microsoft Teams"  = "Microsoft.Teams"
-    "FireFox"          = "Mozilla.Firefox"
-    "Discord"          = "Discord.Discord"
-    "Google Chrome"    = "Google.Chrome"
-    "Notepad ++"       = "Notepad++.Notepad++"
-    "Java 8"           = "Oracle.JavaRuntimeEnvironment"
-                }
-
-# builds generated script
-$scriptContent = @"
+    # generate windows script
+    $scriptContent = @"
 # Generated script through Auto-Script.
 # This script installs selected applications using winget.
 #`n
