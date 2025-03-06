@@ -137,9 +137,9 @@ if ($osSelection -eq "Windows")
         "Notepad ++"       = "Notepad++.Notepad++"
         "Java 8"           = "Oracle.JavaRuntimeEnvironment"
                     }
-}
 
-    # generate windows script
+
+    # generate windows script content
     $scriptContent = @"
 # Generated script through Auto-Script.
 # This script installs selected applications using winget.
@@ -147,23 +147,71 @@ if ($osSelection -eq "Windows")
 
 "@
 
-# loops through all selected applications and adds winget install commands.
-foreach ($app in $selectedOptions) 
-{
-    if ($appFileMap.ContainsKey($app)) 
+    # loops through all selected applications and adds winget install commands.
+    foreach ($app in $selectedOptions) 
     {
-        $wingetID = $appFileMap[$app]
-        $scriptContent += "Write-Host `"Installing $app...`" -ForegroundColor Cyan`n"
-        $scriptContent += "winget install --id $wingetID --silent --accept-source-agreements --accept-package-agreements`n"
-        $scriptContent += "`n"
+        if ($appFileMap.ContainsKey($app)) 
+        {
+            $wingetID = $appFileMap[$app]
+            $scriptContent += "Write-Host `"Installing $app...`" -ForegroundColor Cyan`n"
+            $scriptContent += "winget install --id $wingetID --silent --accept-source-agreements --accept-package-agreements`n"
+            $scriptContent += "`n"
+        }
+    }
+}
+elseif ($osSelection -eq "Linux")
+{
+    $tempPath = [System.IO.Path]::Combine([System.Environment]::GetFolderPath("Desktop"), "Installer-Script.sh")
+    
+    # applications names mapped to Linux APT package names
+    $appFileMap = @{
+        "Steam"            = "steam"
+        "Adobe Reader"     = "acroread"
+        "Microsoft Teams"  = "teams"
+        "FireFox"          = "firefox"
+        "Discord"          = "discord"
+        "Google Chrome"    = "google-chrome-stable"
+        "Notepad++"        = "notepadqq"
+        "Java 8"           = "openjdk-8-jdk"
+                   }
+
+    # generate linux script content
+    $scriptContent = @"
+#!/bin/bash
+# Generated script through Auto-Script.
+# This script installs selected applications using apt-get.
+#`n
+sudo apt update && sudo apt upgrade -y
+"@
+
+    foreach ($app in $selectedOptions)
+    {
+        if ($appFileMap.ContainsKey($app))
+        {
+            $packageName = $appFileMap[$app]
+            $scriptContent += "echo \"Installing $app...\"\n"
+            $scriptContent += "sudo apt install -y $packageName\n"
+            $scriptContent += "\n"
+        }
     }
 }
 
+#
 # writes the generated script to the Desktop
 $scriptContent | Out-File -FilePath $tempPath -Encoding utf8
 
-Write-Host "`nExecution script created at: $tempPath" -ForegroundColor Green
-Write-Host "This new script will install the selected applications using Winget."
+if ($osSelection -eq "Linux")
+{
+    Write-Host "`nExecution script created at: $tempPath" -ForegroundColor Green
+    Write-Host "Run the following command to make it executable and install the applications:"
+    Write-Host "`nchmod +x $tempPath && bash $tempPath" -ForegroundColor Yellow
+}
+else
+{
+    Write-Host "`nExecution script created at: $tempPath" -ForegroundColor Green
+    Write-Host "This new script will install the selected applications using Winget."
+}
+
 Read-Host "Press Enter to exit"
 
 
