@@ -3,7 +3,7 @@
 # Main Script: Application Selection and Generation of an Execution Script
 
 # --- Customizes Initial Background and Foreground ---
-mode con: cols=70 lines=30
+mode con: cols=82 lines=30
 $Host.ui.rawui.backgroundcolor = "Black"
 $Host.ui.rawui.foregroundcolor = "white"
 
@@ -180,7 +180,11 @@ elseif ($osSelection -eq "Linux")
 #!/bin/bash
 # Generated script through Auto-Script.
 # This script installs selected applications using apt-get.
-#`n
+#
+#
+# Run the following command to make it executable and install the applications:`n
+# Write-Host "chmod +x $tempPath && bash $tempPath"
+`n`n
 sudo apt update && sudo apt upgrade -y
 "@
 
@@ -189,9 +193,11 @@ sudo apt update && sudo apt upgrade -y
         if ($appFileMap.ContainsKey($app))
         {
             $packageName = $appFileMap[$app]
-            $scriptContent += "echo \"Installing $app...\"\n"
-            $scriptContent += "sudo apt install -y $packageName\n"
-            $scriptContent += "\n"
+            $scriptContent += @"
+echo "Installing $app..."
+sudo apt install -y $packageName
+`n
+"@
         }
     }
 }
@@ -202,16 +208,16 @@ $scriptContent | Out-File -FilePath $tempPath -Encoding utf8
 
 if ($osSelection -eq "Linux")
 {
-    Write-Host "`nExecution script created at: $tempPath" -ForegroundColor Green
+    Write-Host "`nExecution script created at: $tempPath`n" -ForegroundColor Green
     Write-Host "Run the following command to make it executable and install the applications:"
-    Write-Host "`nchmod +x $tempPath && bash $tempPath" -ForegroundColor Yellow
+    Write-Host "chmod +x $tempPath && bash $tempPath" -ForegroundColor Yellow
 }
 else
 {
-    Write-Host "`nExecution script created at: $tempPath" -ForegroundColor Green
+    Write-Host "`nExecution script created at: $tempPath`n" -ForegroundColor Green
     Write-Host "This new script will install the selected applications using Winget."
 }
 
-Read-Host "Press Enter to exit"
+Read-Host "`nPress Enter to exit"
 
 
