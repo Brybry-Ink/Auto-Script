@@ -11,10 +11,16 @@ $Host.ui.rawui.foregroundcolor = "white"
 do 
 {
     Clear-Host
-    Write-Host "Select your Operating System:" -ForegroundColor Cyan
-    Write-Host "1. Windows"
-    Write-Host "2. Linux"
-    $userOSInput = Read-Host "Enter 1 or 2"
+    Write-Host ""
+    Write-Host ""
+    Write-Host "      ______________________________________________________________________      "
+    Write-Host ""
+    Write-Host "              Select your Operating System:" -ForegroundColor Cyan
+    Write-Host ""
+    Write-Host "           [1] Windows"
+    Write-Host "           [2] Linux"
+    Write-Host ""
+    $userOSInput = Read-Host "           Choose a menu option using your keyboard [1,2,3...E,X,0] "
 
     switch ($userOSInput) 
     {
