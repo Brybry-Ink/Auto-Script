@@ -3,14 +3,14 @@ This script automates the installation of desired programs in an orderly and pre
 
 ## Features
 Automatic installation of selected programs.
--
--
--
--
--
--
--
--
+- Steam
+- Adobe Reader
+- Microsoft Teams
+- Firefox
+- Discord
+- Google Chrome
+- Notepad++
+- Java 8
 
 ## OS's Supported
 - Windows 10/11
