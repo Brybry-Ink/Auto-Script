@@ -23,7 +23,7 @@ do
     Write-Host "      ______________________________________________________________________      "
     Write-Host ""
     Write-Host ""
-    $userOSInput = Read-Host "           Choose a menu option using your keyboard [1,2,3...E,X,0] "
+    $userOSInput = Read-Host "               Choose a menu option using your keyboard [1 or 2] "
  
     switch ($userOSInput) 
     {
@@ -37,8 +37,8 @@ do
             }
         Default 
         {
-            Write-Host "Invalid selection. Please try again." -ForegroundColor Red
-            Start-Sleep 2
+            Write-Host "`n                    Invalid selection. Please try again." -ForegroundColor Red
+            Start-Sleep 1
             $validOS = $false
         }  
     }
