@@ -23,7 +23,7 @@ do
     Write-Host "      ______________________________________________________________________      "
     Write-Host ""
     Write-Host ""
-    $userOSInput = Read-Host "               Choose a menu option using your keyboard [1 or 2] "
+    $userOSInput = Read-Host "               Choose a menu option using your keyboard [1,2] "
  
     switch ($userOSInput) 
     {
