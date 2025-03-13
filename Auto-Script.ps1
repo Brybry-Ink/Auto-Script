@@ -3,7 +3,7 @@
 # Main Script: Application Selection and Generation of an Execution Script
 
 # --- Customizes Initial Background and Foreground ---
-mode con: cols=82 lines=30
+mode con: cols=82 lines=36
 $Host.ui.rawui.backgroundcolor = "Black"
 $Host.ui.rawui.foregroundcolor = "white"
 
@@ -12,7 +12,7 @@ do
 {
     Clear-Host
     Write-Host ""
-    Write-Host ""
+    Write-Host "                                    Auto-Script"
     Write-Host "      ______________________________________________________________________      "
     Write-Host ""
     Write-Host "              Select your Operating System:" -ForegroundColor Cyan
@@ -22,8 +22,8 @@ do
     Write-Host ""
     Write-Host "      ______________________________________________________________________      "
     Write-Host ""
-    Write-Host ""
-    $userOSInput = Read-Host "               Choose a menu option using your keyboard [1,2] "
+    Write-Host "               Choose a menu option using your keyboard [1,2] :" -ForegroundColor Green
+    $userOSInput = Read-Host " "
  
     switch ($userOSInput) 
     {
@@ -62,27 +62,42 @@ $selectedOptions = @()
 while ($true) 
 {
     Clear-Host
-
-    # Display Available Options with Numbers
-    Write-Host "Available Options:" -ForegroundColor Cyan
+    Write-Host ""
+    Write-Host "                                    Windows"
+    Write-Host "      ______________________________________________________________________      "
+    Write-Host ""
+    Write-Host "              Available Options:" -ForegroundColor Cyan
+    Write-Host ""
+    # display Available Options with Numbers
     for ($i = 0; $i -lt $options.Count; $i++) 
     {
-        Write-Host ("{0}. {1}" -f ($i + 1), $options[$i])
+        Write-Host ("           [{0}] {1}" -f ($i + 1), $options[$i])
     }
     
-    # Display Selected Options
-    Write-Host "`nSelected Options:" -ForegroundColor Green
+    Write-Host ""
+    Write-Host "           [X] Finish"
+    Write-Host "           _____________________________________________________________          "
+    Write-Host""
+    Write-Host "              " -NoNewline
+    Write-Host "Selected Options:" -ForegroundColor Cyan -NoNewline
+    Write-Host "              - Click again to remove" -ForegroundColor Green
+    Write-Host""
+    
+    # display Selected Options
     if ($selectedOptions.Count -eq 0) 
     {
-        Write-Host "None"
-    } 
+        Write-Host "           None"
+    }
     else 
     {
-        $selectedOptions | ForEach-Object { Write-Host $_ }
+        $selectedOptions | ForEach-Object { Write-Host ("               " + $_) }
     }
+
     
-    Write-Host "`nEnter the number of an option to add/remove it, or 'X' to finish:" -ForegroundColor Yellow
-    $userInput = Read-Host "Your Selection"
+    Write-Host "      ______________________________________________________________________      "
+    Write-Host ""
+    Write-Host "               Choose a menu option using your keyboard [1,2,3...8,X] :" -ForegroundColor Green
+    $userInput = Read-Host " "
     
     if ($userInput -match '^[Xx]$') 
     {
@@ -97,14 +112,15 @@ while ($true)
             $optionName = $options[$choiceNumber - 1]
             if ($selectedOptions -contains $optionName) 
             {
-                $removeChoice = Read-Host "`n$optionName is already selected. Do you want to remove it? (Y/N)"
+                Write-Host "  $optionName is already selected. Do you want to remove it? (Y/N)"
+                $removeChoice = Read-Host " "
                 if ($removeChoice -match '^[Yy]$')
                 {
                     $selectedOptions = $selectedOptions | Where-Object { $_ -ne $optionName }
                     Write-Host "$optionName removed." -ForegroundColor Red
                 }
             } 
-            else 
+            else
             {
                 $selectedOptions += $optionName
                 Write-Host "$optionName added." -ForegroundColor Green
