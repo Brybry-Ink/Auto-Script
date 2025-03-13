@@ -247,7 +247,7 @@ if ($osSelection -eq "Linux")
 else #windows excecution
 {
     Write-Host "`nExecution script created at: $tempPath`n" -ForegroundColor Yellow
-    Write-Host "This new script will automatically install..."
+    Write-Host "Installing Automatically..."
     Start-Sleep 1
     Start-Process powershell -ArgumentList "-ExecutionPolicy Bypass -File $tempPath"
 }
