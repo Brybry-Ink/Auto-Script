@@ -155,7 +155,7 @@ if ($selectedOptions.Count -eq 0)
 # --- Generate Windows Install Script ---
 if ($osSelection -eq "Windows")
 {
-    $tempPath = [System.IO.Path]::Combine([System.Environment]::GetFolderPath("Desktop"), "Installer-Script.ps1")
+    $tempPath = [System.IO.Path]::Combine([System.IO.Path]::GetTempPath(), "Installer-Script.ps1") # PATH GOES TO USERS TEMP FOLDER "C:\Users\Username\AppData\Local\Temp\"
     
     #  applications names mapped to their winget IDs
     $appFileMap = @{
@@ -243,10 +243,12 @@ if ($osSelection -eq "Linux")
     Write-Host "Run the following command to make it executable and install the applications:"
     Write-Host "chmod +x $tempPath && bash $tempPath" -ForegroundColor Yellow
 }
-else
+else #windows excecution
 {
-    Write-Host "`nExecution script created at: $tempPath`n" -ForegroundColor Green
-    Write-Host "This new script will install the selected applications using Winget."
+    Write-Host "`nExecution script created at: $tempPath`n" -ForegroundColor Yellow
+    Write-Host "This new script will automatically install..."
+    Start-Sleep 1
+    Start-Process powershell -ArgumentList "-ExecutionPolicy Bypass -File $tempPath"
 }
 
 Read-Host "`nPress Enter to exit"
