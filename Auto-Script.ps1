@@ -5,6 +5,7 @@
 # --- Customizes Initial Background and Foreground ---
 $Host.ui.rawui.backgroundcolor = "Black"
 $Host.ui.rawui.foregroundcolor = "white"
+$Host.UI.RawUI.WindowTitle = "Auto-Script Installer"
 $Host.UI.RawUI.WindowSize = New-Object System.Management.Automation.Host.Size (83, 37)
 $Host.UI.RawUI.BufferSize = New-Object System.Management.Automation.Host.Size (83, 37)
 Clear-Host
