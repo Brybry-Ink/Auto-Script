@@ -37,7 +37,7 @@ do
             }
         Default 
         {
-            Write-Host "`n                    Invalid selection. Please try again." -ForegroundColor Red
+            Write-Host "                    Invalid selection. Please try again." -ForegroundColor Red
             Start-Sleep 1
             $validOS = $false
         }  
@@ -75,7 +75,7 @@ while ($true)
     }
     
     Write-Host ""
-    Write-Host "           [X] Finish"
+    Write-Host "           [X] Complete Selection"
     Write-Host "           _____________________________________________________________          "
     Write-Host""
     Write-Host "              " -NoNewline
@@ -86,7 +86,7 @@ while ($true)
     # display Selected Options
     if ($selectedOptions.Count -eq 0) 
     {
-        Write-Host "           None"
+        Write-Host "               None"
     }
     else 
     {
@@ -128,12 +128,12 @@ while ($true)
         } 
         else 
         {
-            Write-Host "Invalid number. Please select a number between 1 and $($options.Count)." -ForegroundColor Red
+            Write-Host "Please enter a valid input [1,2,3...8,X]" -ForegroundColor Red
         }
     }
     else 
     {
-        Write-Host "Invalid input. Please enter a valid number or 'X' to finish." -ForegroundColor Red
+        Write-Host "Please enter a valid input [1,2,3...8,X]" -ForegroundColor Red
     }
     
     Start-Sleep 1
