@@ -1,11 +1,17 @@
 # This file should be in .ps1 for it to work
-# Example: Autoinstallscript.ps1
+# Example: auto-script.ps1
 # Main Script: Application Selection and Generation of an Execution Script
 
 # --- Customizes Initial Background and Foreground ---
-mode con: cols=82 lines=36
 $Host.ui.rawui.backgroundcolor = "Black"
 $Host.ui.rawui.foregroundcolor = "white"
+$Host.UI.RawUI.WindowSize = New-Object System.Management.Automation.Host.Size (83, 37)
+$Host.UI.RawUI.BufferSize = New-Object System.Management.Automation.Host.Size (83, 37)
+Clear-Host
+$Host.UI.RawUI.WindowSize = New-Object System.Management.Automation.Host.Size (82, 36)
+$Host.UI.RawUI.BufferSize = New-Object System.Management.Automation.Host.Size (82, 36)
+$Host.UI.RawUI.Clear()
+Clear-Host
 
 # --- OS Selection ---
 do 
