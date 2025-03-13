@@ -63,7 +63,7 @@ while ($true)
 {
     Clear-Host
     Write-Host ""
-    Write-Host "                                    Windows"
+    Write-Host "                                    Auto-Script"
     Write-Host "      ______________________________________________________________________      "
     Write-Host ""
     Write-Host "              Available Options:" -ForegroundColor Cyan
