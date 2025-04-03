@@ -19,7 +19,10 @@ Automatic installation of selected programs.
 
 ## OS's Supported
 - Windows 10/11
-- Linux Mint
+- Linux Ubuntu
 
 ## Built With
 - [PowerShell](https://github.com/PowerShell/PowerShell) - The Programming Language Used
+
+## License
+Auto-Script is open-sourced under the [MIT License](https://github.com/Brybry-Ink/Auto-Script?tab=MIT-1-ov-file). Feel free to use, modify, and distribute as per the terms of the license.
