@@ -1,20 +1,22 @@
-# Auto-Script Installer with macOS Support
+# Auto-Script Installer (Cross-Platform)
 
-# --- Customizes Initial Background and Foreground ---
-$Host.ui.rawui.backgroundcolor = "Black"
-$Host.ui.rawui.foregroundcolor = "white"
-$Host.UI.RawUI.WindowTitle = "Auto-Script Installer"
-$Host.UI.RawUI.WindowSize = New-Object System.Management.Automation.Host.Size (83, 37)
-$Host.UI.RawUI.BufferSize = New-Object System.Management.Automation.Host.Size (83, 37)
-Clear-Host
-$Host.UI.RawUI.WindowSize = New-Object System.Management.Automation.Host.Size (82, 36)
-$Host.UI.RawUI.BufferSize = New-Object System.Management.Automation.Host.Size (82, 36)
-$Host.UI.RawUI.Clear()
-Clear-Host
+# --- Check if running in PowerShell Core (pwsh) ---
+if ($PSVersionTable.PSEdition -ne "Core") {
+    Write-Host "This script requires PowerShell Core (pwsh). Please install it first." -ForegroundColor Red
+    Write-Host "For macOS/Linux: 'brew install powershell' or see https://aka.ms/powershell" -ForegroundColor Yellow
+    exit 1
+}
+
+# --- Customizes Initial Background and Foreground (Windows-only) ---
+if ($IsWindows) {
+    $Host.UI.RawUI.BackgroundColor = "Black"
+    $Host.UI.RawUI.ForegroundColor = "White"
+    $Host.UI.RawUI.WindowTitle = "Auto-Script Installer"
+    Clear-Host
+}
 
 # --- OS Selection ---
-do 
-{
+do {
     Clear-Host
     Write-Host ""
     Write-Host "                                    Auto-Script"
@@ -31,13 +33,11 @@ do
     Write-Host "               Choose a menu option using your keyboard [1,2,3] :" -ForegroundColor Green
     $userOSInput = Read-Host " "
  
-    switch ($userOSInput) 
-    {
+    switch ($userOSInput) {
         "1" { $osSelection = "Windows"; $validOS = $true }
         "2" { $osSelection = "Linux"; $validOS = $true }
         "3" { $osSelection = "macOS"; $validOS = $true }
-        Default 
-        {
+        default {
             Write-Host "                    Invalid selection. Please try again." -ForegroundColor Red
             Start-Sleep 1
             $validOS = $false
@@ -49,8 +49,7 @@ do
 $options = @("Steam", "Adobe Reader", "Microsoft Teams", "FireFox", "Discord", "Google Chrome", "Notepad ++", "Java 8")
 $selectedOptions = @()
 
-while ($true) 
-{
+while ($true) {
     Clear-Host
     Write-Host ""
     Write-Host "                                    Auto-Script"
@@ -109,77 +108,68 @@ if ($selectedOptions.Count -eq 0) {
     exit
 }
 
+# --- Generate OS-specific installation script ---
 if ($osSelection -eq "Windows") {
-    $tempPath = [System.IO.Path]::Combine([System.IO.Path]::GetTempPath(), "Installer-Script.ps1")
+    $tempPath = Join-Path -Path $env:TEMP -ChildPath "Installer-Script.ps1"
     $appFileMap = @{
         "Steam" = "Valve.Steam"; "Adobe Reader" = "Adobe.Acrobat.Reader.64-bit";
         "Microsoft Teams" = "Microsoft.Teams"; "FireFox" = "Mozilla.Firefox";
         "Discord" = "Discord.Discord"; "Google Chrome" = "Google.Chrome";
         "Notepad ++" = "Notepad++.Notepad++"; "Java 8" = "Oracle.JavaRuntimeEnvironment"
     }
-    $scriptContent = """
+    $scriptContent = @"
 # Generated script through Auto-Script.
 # This script installs selected applications using winget.
 
-"""
+"@
     foreach ($app in $selectedOptions) {
         if ($appFileMap.ContainsKey($app)) {
             $wingetID = $appFileMap[$app]
-            $scriptContent += 'Write-Host "Installing ' + $app + '..." -ForegroundColor Cyan' + "`n"
+            $scriptContent += "Write-Host `"Installing $app...`" -ForegroundColor Cyan`n"
             $scriptContent += "winget install --id $wingetID --silent --accept-source-agreements --accept-package-agreements`n`n"
         }
     }
-} elseif ($osSelection -eq "Linux") {
-    $tempPath = [System.IO.Path]::Combine([System.Environment]::GetFolderPath("Desktop"), "Installer-Script.sh")
+} elseif ($osSelection -eq "Linux" -or $osSelection -eq "macOS") {
+    $tempPath = Join-Path -Path ([Environment]::GetFolderPath("Desktop")) -ChildPath "Installer-Script.sh"
     $appFileMap = @{
         "Steam" = "steam"; "Adobe Reader" = "acroread";
         "Microsoft Teams" = "teams"; "FireFox" = "firefox";
         "Discord" = "discord"; "Google Chrome" = "google-chrome-stable";
         "Notepad ++" = "notepadqq"; "Java 8" = "openjdk-8-jdk"
     }
-    $scriptContent = """
+    if ($osSelection -eq "macOS") {
+        $appFileMap = @{
+            "Steam" = "steam"; "Adobe Reader" = "adobe-acrobat-reader";
+            "Microsoft Teams" = "microsoft-teams"; "FireFox" = "firefox";
+            "Discord" = "discord"; "Google Chrome" = "google-chrome";
+            "Notepad ++" = "visual-studio-code"; "Java 8" = "temurin8"
+        }
+    }
+    $scriptContent = @"
 #!/bin/bash
 # Generated script through Auto-Script.
-# This script installs selected applications using apt-get.
+# This script installs selected applications.
 
-sudo apt update && sudo apt upgrade -y
+if [[ `"$osSelection`" == `"macOS`" ]]; then
+    if ! command -v brew &> /dev/null; then
+        echo "Homebrew not found. Installing Homebrew..."
+        /bin/bash -c `"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)`"
+        echo 'eval `"$(/opt/homebrew/bin/brew shellenv)`"' >> ~/.zprofile
+        eval `"$(/opt/homebrew/bin/brew shellenv)`"
+    fi
+    brew update
+    brew tap homebrew/cask
+fi
 
-"""
+"@
     foreach ($app in $selectedOptions) {
         if ($appFileMap.ContainsKey($app)) {
             $packageName = $appFileMap[$app]
-            $scriptContent += "echo \"Installing $app...\"\nsudo apt install -y $packageName\n\n"
-        }
-    }
-} elseif ($osSelection -eq "macOS") {
-    $tempPath = [System.IO.Path]::Combine([System.Environment]::GetFolderPath("Desktop"), "Installer-Script.sh")
-    $appFileMap = @{
-        "Steam" = "steam"; "Adobe Reader" = "adobe-acrobat-reader";
-        "Microsoft Teams" = "microsoft-teams"; "FireFox" = "firefox";
-        "Discord" = "discord"; "Google Chrome" = "google-chrome";
-        "Notepad ++" = "visual-studio-code"; "Java 8" = "temurin8"
-    }
-    $scriptContent = """
-#!/bin/bash
-# Generated script through Auto-Script.
-# This script installs selected applications using Homebrew.
-
-if ! command -v brew &> /dev/null
-then
-    echo "Homebrew not found. Installing Homebrew..."
-    /bin/bash -c \"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\"
-    echo 'eval \"$(/opt/homebrew/bin/brew shellenv)\"' >> ~/.zprofile
-    eval \"$(/opt/homebrew/bin/brew shellenv)\"
-fi
-
-brew update
-brew tap homebrew/cask
-
-"""
-    foreach ($app in $selectedOptions) {
-        if ($appFileMap.ContainsKey($app)) {
-            $brewName = $appFileMap[$app]
-            $scriptContent += "echo \"Installing $app...\"\nbrew install --cask $brewName\n\n"
+            if ($osSelection -eq "Linux") {
+                $scriptContent += "echo `"Installing $app...`"`nsudo apt install -y $packageName`n`n"
+            } else {
+                $scriptContent += "echo `"Installing $app...`"`nbrew install --cask $packageName`n`n"
+            }
         }
     }
 }
@@ -189,12 +179,12 @@ $scriptContent | Out-File -FilePath $tempPath -Encoding utf8
 if ($osSelection -eq "Linux" -or $osSelection -eq "macOS") {
     Write-Host "`nExecution script created at: $tempPath`n" -ForegroundColor Green
     Write-Host "Run the following command to make it executable and install the applications:"
-    Write-Host "chmod +x $tempPath && bash $tempPath" -ForegroundColor Yellow
+    Write-Host "chmod +x `"$tempPath`" && bash `"$tempPath`"" -ForegroundColor Yellow
 } else {
     Write-Host "`nExecution script created at: $tempPath`n" -ForegroundColor Yellow
     Write-Host "Installing Automatically..."
     Start-Sleep 1
-    Start-Process powershell -ArgumentList "-ExecutionPolicy Bypass -File $tempPath"
+    Start-Process pwsh -ArgumentList "-ExecutionPolicy Bypass -File `"$tempPath`""
 }
 
 Read-Host "`nPress Enter to exit"
