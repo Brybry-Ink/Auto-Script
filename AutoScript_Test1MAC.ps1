@@ -125,7 +125,7 @@ if ($osSelection -eq "Windows") {
     foreach ($app in $selectedOptions) {
         if ($appFileMap.ContainsKey($app)) {
             $wingetID = $appFileMap[$app]
-            $scriptContent += "Write-Host \"Installing $app...\" -ForegroundColor Cyan`n"
+            $scriptContent += 'Write-Host "Installing ' + $app + '..." -ForegroundColor Cyan' + "`n"
             $scriptContent += "winget install --id $wingetID --silent --accept-source-agreements --accept-package-agreements`n`n"
         }
     }
