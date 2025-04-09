@@ -7,7 +7,7 @@ This script automates the installation of desired programs in an orderly and pre
 <hr>
 
 ## How it Works
-1. [Download](https://github.com/Brybry-Ink/Auto-Script/releases) the .exe or .ps1 file from Releases and follow the prompts
+1. Download the .exe or .ps1 file from [Releases](https://github.com/Brybry-Ink/Auto-Script/releases) and follow the prompts
 2. User selects the operating system (Windows or Linux)
 3. A menu is displayed for selecting apps to install
 4. Based on the selection, a script is generated
